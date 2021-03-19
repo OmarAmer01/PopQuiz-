@@ -2,6 +2,7 @@ import requests
 import random
 import json
 import PySimpleGUI as gui
+
 welcomeLayout = [
     [gui.Text("Loading Question...", font=("Arial", 48))]
 ]
@@ -20,6 +21,9 @@ answers.append(question["results"][0]["correct_answer"])
 random.shuffle(answers)
 correctAns = question["results"][0]["correct_answer"]
 
+score = 0
+scoreText = "Score " + str(score)
+
 layout = [[gui.Text(questionText)]]
 if questionType == "multiple":
     layout = [[gui.Text(questionText)],
@@ -27,7 +31,8 @@ if questionType == "multiple":
               [gui.Radio(answers[1], 0, key=2)],
               [gui.Radio(answers[2], 0, key=3)],
               [gui.Radio(answers[3], 0, key=4)],
-              [gui.Button("Check")]
+              [gui.Button("Check")], [gui.Text(scoreText, justification='center', key=-1)]
+
               ]
 
 
@@ -36,28 +41,43 @@ else:
         [gui.Text(questionText)],
         [gui.Radio(answers[0], 0, key=1)],
         [gui.Radio(answers[1], 0, key=2)],
-        [gui.Button("Check")]
+        [gui.Button("Check")],
+        [gui.Text(scoreText, justification='center', key=-1)]
     ]
 
 mainWindow.close()
 mainWindow = gui.Window("PopQuiz!", layout=layout)
 print("SHOULD SHOW")
 
-
+layout.append([gui.Text(scoreText, justification='center')])
 selectedIndex = -1
+ansIndex = -1
 while True:
     events, values = mainWindow.read()
     if events == "Check":
-
-        for i in range(1, len(values)):
+        for i in range(len(answers)):
+            if answers[int(i) - 1] == correctAns:
+                ansIndex = i
+                break
+        for i in range(1, len(values) + 1):
             if values[i]:
                 selectedIndex = i
                 break
-    if correctAns == answers[selectedIndex]:
-        print("CORRECT")
-    else:
-        print("Incorrect, answer is", correctAns)
-    mainWindow[selectedIndex].update(text_color='red')
+        if selectedIndex != -1:
+            for i in range(1, len(answers) + 1):
+                mainWindow[i].update(text_color='red')
+            mainWindow[ansIndex].update(text_color='green')
+
+    if selectedIndex != -1:
+        if correctAns == answers[selectedIndex - 1]:
+            print("CORRECT")
+            score += 1
+            scoreText = "Score " + str(score)
+            mainWindow[-1].update(scoreText)
+
+        else:
+            print("Incorrect, answer is", correctAns)
+
     if events == gui.WIN_CLOSED or events == 'Exit':
         break
 
