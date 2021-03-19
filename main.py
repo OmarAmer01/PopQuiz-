@@ -23,10 +23,10 @@ correctAns = question["results"][0]["correct_answer"]
 layout = [[gui.Text(questionText)]]
 if questionType == "multiple":
     layout = [[gui.Text(questionText)],
-              [gui.Radio(answers[0], 0)],
-              [gui.Radio(answers[1], 0)],
-              [gui.Radio(answers[2], 0)],
-              [gui.Radio(answers[3], 0)],
+              [gui.Radio(answers[0], 0, key=1)],
+              [gui.Radio(answers[1], 0, key=2)],
+              [gui.Radio(answers[2], 0, key=3)],
+              [gui.Radio(answers[3], 0, key=4)],
               [gui.Button("Check")]
               ]
 
@@ -34,8 +34,8 @@ if questionType == "multiple":
 else:
     layout = [
         [gui.Text(questionText)],
-        [gui.Radio(answers[0], 0)],
-        [gui.Radio(answers[1], 0)],
+        [gui.Radio(answers[0], 0, key=1)],
+        [gui.Radio(answers[1], 0, key=2)],
         [gui.Button("Check")]
     ]
 
@@ -44,10 +44,20 @@ mainWindow = gui.Window("PopQuiz!", layout=layout)
 print("SHOULD SHOW")
 
 
+selectedIndex = -1
 while True:
     events, values = mainWindow.read()
-    print(events, values)
-    print(type(events))
+    if events == "Check":
+        selectedBefore = True
+        for i in range(len(values)):
+            if values[i]:
+                selectedIndex = i
+    if correctAns == answers[selectedIndex]:
+        print("CORRECT")
+    else:
+        print("Incorrect, answer is", correctAns)
+    #for i in mainWindow:
+        #mainWindow[i].update(text_color='red')
     if events == gui.WIN_CLOSED or events == 'Exit':
         break
 
