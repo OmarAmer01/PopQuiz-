@@ -48,16 +48,16 @@ selectedIndex = -1
 while True:
     events, values = mainWindow.read()
     if events == "Check":
-        selectedBefore = True
-        for i in range(len(values)):
+
+        for i in range(1, len(values)):
             if values[i]:
                 selectedIndex = i
+                break
     if correctAns == answers[selectedIndex]:
         print("CORRECT")
     else:
         print("Incorrect, answer is", correctAns)
-    #for i in mainWindow:
-        #mainWindow[i].update(text_color='red')
+    mainWindow[selectedIndex].update(text_color='red')
     if events == gui.WIN_CLOSED or events == 'Exit':
         break
 
