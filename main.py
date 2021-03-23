@@ -2,6 +2,7 @@ import requests
 import random
 import json
 import PySimpleGUI as gui
+import time
 
 welcomeLayout = [
     [gui.Text("Loading Question...", font=("Arial", 48))]
@@ -9,8 +10,11 @@ welcomeLayout = [
 mainWindow = gui.Window("Pop Quiz!", welcomeLayout)
 mainWindow.finalize()
 print("CALLING")
+
 req = requests.get("https://opentdb.com/api.php?amount=1")
 print("GOT THIS FAR")
+
+
 
 question = json.loads(req.text)
 questionType = question["results"][0]["type"]
@@ -56,7 +60,7 @@ while True:
     events, values = mainWindow.read()
     if events == "Check":
         for i in range(len(answers)):
-            if answers[int(i) - 1] == correctAns:
+            if answers[int(i)] == correctAns:
                 ansIndex = i
                 break
         for i in range(1, len(values) + 1):
@@ -66,7 +70,7 @@ while True:
         if selectedIndex != -1:
             for i in range(1, len(answers) + 1):
                 mainWindow[i].update(text_color='red')
-            mainWindow[ansIndex].update(text_color='green')
+            mainWindow[ansIndex+1].update(text_color='green')
 
     if selectedIndex != -1:
         if correctAns == answers[selectedIndex - 1]:
